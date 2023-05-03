@@ -1,37 +1,41 @@
-let DB;
+(function () {
+  let DB;
 
-document.addEventListener('DOMContentLoaded', () => {
-  crearDB();
-});
+  document.addEventListener('DOMContentLoaded', () => {
+    crearDB();
+  });
 
-//! CREAR BASE DE DATOS DE indexDB
-function crearDB() {
-  const crearDB = window.indexedDB.open('crm', 1);
+  //! CREAR BASE DE DATOS DE indexDB
+  function crearDB() {
+    //* CREAR BASE DE DATOS
+    const crearDB = window.indexedDB.open('crm', 1); // ('nombre', version)
 
-  //* EN CASO DE ERROR
-  crearDB.onerror = function () {
-    console.log('Hubo un Error');
-  };
+    //* EN CASO DE ERROR
+    crearDB.onerror = function () {
+      console.log('Hubo un Error');
+    };
 
-  //* EN CASO DE SUCCESS
-  crearDB.onsuccess = function () {
-    DB = crearDB.result;
-  };
+    //* EN CASO DE SUCCESS
+    crearDB.onsuccess = function () {
+      DB = crearDB.result;
+    };
 
-  crearDB.onupgradeneeded = function (e) {
-    const db = e.target.result;
+    //* CREAR CAMPOS Y PROPIEDADES BASE DE DATOS
 
-    const objectStore = db.createObjectStore('crm', {
-      keyPath: 'id',
-      autoIncrement: true,
-    });
+    crearDB.onupgradeneeded = function (e) {
+      const db = e.target.result;
 
-    objectStore.createIndex('nombre', 'nombre', { unique: false });
-    objectStore.createIndex('email', 'email', { unique: true });
-    objectStore.createIndex('telefono', 'telefono', { unique: false });
-    objectStore.createIndex('empresa', 'empresa', { unique: false });
-    objectStore.createIndex('id', 'id', { unique: true });
+      const objectStore = db.createObjectStore('crm', {
+        keyPath: 'id', // 'Identificador'
+        autoIncrement: true, // 'Autoincrementarse para agregar nuevos datos'
+      });
 
-    console.log('DB Lista y Creada');
-  };
-}
+      //* CREAR COLUMNAS DE LA BASE DE DATOS
+      objectStore.createIndex('nombre', 'nombre', { unique: false });
+      objectStore.createIndex('email', 'email', { unique: true });
+      objectStore.createIndex('telefono', 'telefono', { unique: false });
+      objectStore.createIndex('empresa', 'empresa', { unique: false });
+      objectStore.createIndex('id', 'id', { unique: true });
+    };
+  }
+})();
